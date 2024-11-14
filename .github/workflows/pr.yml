@@ -1,0 +1,50 @@
+name: Lint and Format
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9.6.0
+    
+    - name: Setup cache
+      uses: actions/cache@v4
+      id: cache
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-pnpm-cache-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-cache-${{ hashFiles('pnpm-lock.yaml') }}
+
+    - name: Install dependencies
+      run: pnpm install
+      if: steps.cache.outputs.cache-hit != 'true'
+
+    - name: Save
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          node_modules
+        key: ${{ steps.cache.outputs.cache-primary-key }}
+
+    - name: Run Biome Lint
+      run: pnpm biome lint
+
+    - name: Run Biome Format Check
+      run: pnpm format:check
