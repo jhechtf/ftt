@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "lnf.aliases": {
+    "$/": "${workspaceRoot}/",
+    "$app/": "${workspaceRoot}/src/app/",
+    "$comp/": "${workspaceRoot}/src/components/",
+    "$lib/": "${workspaceRoot}/src/lib/"
+  }
+}
